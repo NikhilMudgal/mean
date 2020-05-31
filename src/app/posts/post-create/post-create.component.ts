@@ -1,5 +1,7 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Post } from '../posts.model';
+import { NgForm } from '@angular/forms';
+import { PostService } from '../posts.service';
 
 @Component({
   selector: 'app-post-create',
@@ -9,13 +11,17 @@ import { Post } from '../posts.model';
 export class PostCreateComponent implements OnInit {
   title = '';
   content = '';
-  @Output() postCreated = new EventEmitter<Post>();
-  constructor() {}
+  constructor(private postService: PostService) { }
 
   ngOnInit(): void {}
 
-  onAddPost() {
-    const post: Post = { title: this.title, content: this.content };
-    this.postCreated.emit(post);
+  onAddPost(form: NgForm) {
+    if (form.valid) {
+      this.postService.addPost(form.value.title, form.value.content);
+      form.resetForm();
+    }
+  }
+  getErrorMessage() {
+    return 'This Field is required';
   }
 }
