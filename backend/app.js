@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express(); // this will return an express app
 
@@ -7,6 +8,9 @@ const app = express(); // this will return an express app
 //   next();  // if next function is executed, then the request will actually continue its journey
 
 // });   // use middleware on our app and on the incoming request
+
+  app.use(bodyParser.json());
+  // app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   // First Argument is Header Key and second argument is value for that header
@@ -22,6 +26,14 @@ app.use((req, res, next) => {
     "GET, POST, PATCH, DELETE, OPTIONS"
   ); // it tells which http verbs may be used to send requests
   next();
+});
+
+app.post("/api/posts", (req, res, next) => {
+  const post = req.body;
+  console.log(post);
+  res.status(201).json({
+    message: 'Post Added Successfully'
+  });
 });
 
 app.use("/api/posts", (req, res, next) => {
