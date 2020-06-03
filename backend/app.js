@@ -60,24 +60,17 @@ app.post("/api/posts", (req, res, next) => {
   });
 });
 
-app.use("/api/posts", (req, res, next) => {
-  const posts = [
-    {
-      Id: "154651cds535",
-      title: "This is a post",
-      content: "This is coming from server",
-    },
-    {
-      Id: "789fgfd8g7",
-      title: "This is a second post",
-      content: "This is coming from server as well",
-    },
-  ];
-  // without it will not continue travel down other middle wares and
-  return res.status(200).json({
-    posts: posts,
-    message: "These are coming from app.js file",
-  });
+app.get("/api/posts", (req, res, next) => {
+  Post.find()
+  .then(documents => {
+    console.log(documents);
+    return res.status(200).json({
+      posts: documents,
+      message: "These are coming from app.js file",
+    });
+  });    // find() simply return all entries
+  // without next() it will not continue travel down other middle wares and
+
 });
 
 module.exports = app;
