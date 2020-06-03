@@ -1,7 +1,26 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const Post = require("./models/post");
 
 const app = express(); // this will return an express app
+
+mongoose
+  .connect(
+    "mongodb+srv://nikhil_mudgal:N82813970@cluster0.fluzu.mongodb.net/posts?retryWrites=true&w=majority",
+    {
+      // In 'mongodb.net/posts' posts is the name of the database
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    }
+  )
+  .then(() => {
+    console.log("Connected to Mongodb Database");
+  })
+  .catch(() => {
+    console.log("Connection Failed");
+  });
 
 // app.use((req, res, next) =>{      // use uses the middleware on our app and on the incoming request
 //   console.log('First MiddleWare');
@@ -9,8 +28,8 @@ const app = express(); // this will return an express app
 
 // });   // use middleware on our app and on the incoming request
 
-  app.use(bodyParser.json());
-  // app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   // First Argument is Header Key and second argument is value for that header
@@ -29,10 +48,15 @@ app.use((req, res, next) => {
 });
 
 app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content,
+  });
   console.log(post);
+  post.save(); // save() is provided by mongoose package itself
+  // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
   res.status(201).json({
-    message: 'Post Added Successfully'
+    message: "Post Added Successfully",
   });
 });
 
