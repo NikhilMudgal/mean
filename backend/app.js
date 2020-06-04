@@ -53,11 +53,15 @@ app.post("/api/posts", (req, res, next) => {
     content: req.body.content,
   });
   console.log(post);
-  post.save(); // save() is provided by mongoose package itself
-  // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
-  res.status(201).json({
-    message: "Post Added Successfully",
+  post.save()   // save() is provided by mongoose package itself
+  .then(createdPost => {
+    res.status(201).json({
+      message: "Post Added Successfully",
+      postId: createdPost._id
+    });
   });
+  // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
+
 });
 
 app.get("/api/posts", (req, res, next) => {
