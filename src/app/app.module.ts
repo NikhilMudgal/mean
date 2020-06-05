@@ -8,8 +8,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PostsComponent } from './posts/posts.component';
 import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
@@ -17,13 +17,13 @@ import { PostListComponent } from './posts/post-list/post-list.component';
 @NgModule({
   declarations: [
     AppComponent,
-    PostsComponent,
     PostCreateComponent,
     HeaderComponent,
     PostListComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
     MatInputModule,
