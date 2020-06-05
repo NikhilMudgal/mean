@@ -42,7 +42,7 @@ app.use((req, res, next) => {
   // First line allows which domain can access our resources and the second statement tells the incoming request may have these headers
   res.setHeader(
     "Access-Control-Allow-Methods",
-    "GET, POST, PATCH, DELETE, OPTIONS"
+    "GET, POST, PUT, DELETE, OPTIONS"
   ); // it tells which http verbs may be used to send requests
   next();
 });
@@ -75,6 +75,15 @@ app.get("/api/posts", (req, res, next) => {
   });    // find() simply return all entries
   // without next() it will not continue travel down other middle wares and
 
+});
+
+app.put("/api/posts/:id", (req,res,next) => {
+  // put() will replace the existing object while patch updates the existing object
+  const post = new Post({ title: req.body.title, content: req.body.content})
+  Post.updateOne({_id: req.params.id}, post).then(result => {
+    console.log(result);
+    res.status(200).json({message: "Update Successfully"});
+  })
 });
 
 app.delete("/api/posts/:id", (req, res, next) => {

@@ -1,11 +1,11 @@
 <mat-card>
-  <form (submit)= "onAddPost(postForm)" #postForm = "ngForm">  <!-- #postForm = "ngForm" will give access to the form object-->
+  <form (submit)= "onSavePost(postForm)" #postForm = "ngForm">  <!-- #postForm = "ngForm" will give access to the form object-->
   <mat-form-field>
-    <input matInput type="text" name = "title" required minlength="3" ngModel #title="ngModel" placeholder="Title">
+    <input matInput type="text" name = "title" required minlength="3" [ngModel] = "post.title" #title="ngModel" placeholder="Title">
     <mat-error *ngIf = "title.invalid">{{getErrorMessage()}}</mat-error>
   </mat-form-field>
   <mat-form-field>
-    <textarea matInput rows="6" name = "content" placeholder="Content" required minlength = "3" ngModel #content= "ngModel"></textarea>
+    <textarea matInput rows="6" name = "content" placeholder="Content" required minlength = "3" [ngModel] = "post.content"  #content= "ngModel"></textarea>
     <mat-error *ngIf = "content.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
 <button mat-raised-button color= "primary" type="submit" [disabled]= "postForm.invalid">Save Post</button>
