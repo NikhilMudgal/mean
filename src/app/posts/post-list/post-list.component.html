@@ -1,13 +1,18 @@
-<mat-accordion *ngIf = "posts.length > 0">  <!--use multi = "true" to expand  more than one -->
+<mat-accordion *ngIf="posts.length > 0">
+  <!--use multi = "true" to expand  more than one -->
 
-<mat-expansion-panel *ngFor = "let post of posts">
-  <mat-expansion-panel-header>{{post.title}}</mat-expansion-panel-header>
-  <p>{{post.content}}</p>
-  <mat-action-row>
-    <button mat-button color = "primary" [routerLink] = "['edit', post.Id]">Edit</button>
-    <button mat-button color = "warn" (click) = "onDelete(post.Id)">Delete</button>
-  </mat-action-row>
-</mat-expansion-panel>
+  <mat-expansion-panel *ngFor="let post of posts">
+    <mat-expansion-panel-header>{{ post.title }}</mat-expansion-panel-header>
+    <p>{{ post.content }}</p>
+    <mat-action-row>
+      <button mat-button color="primary" [routerLink]="['edit', post.Id]">
+        Edit
+      </button>
+      <button mat-button color="warn" (click)="onDelete(post.Id)">
+        Delete
+      </button>
+    </mat-action-row>
+  </mat-expansion-panel>
 </mat-accordion>
 
-<p *ngIf = "posts.length===0" class=" info-text mat-body-1">No Posts</p>
+<p *ngIf="posts.length === 0" class="info-text mat-body-1">No Posts</p>
