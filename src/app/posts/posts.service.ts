@@ -3,6 +3,7 @@ import { Post } from './posts.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class PostService {
   private postUpdates = new Subject<Post[]>();
   private posts: Post[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getPosts() {
     // this requests will not be send if we donot subscribe to it
@@ -58,6 +59,7 @@ export class PostService {
         post.Id = responseData.postId;
         this.posts.push(post);
         this.postUpdates.next([...this.posts]); // Emiting the event
+        this.router.navigate(['/']);
       });
   }
 
@@ -71,6 +73,7 @@ export class PostService {
         updatedPosts[oldPostIndex] = post;
         this.posts = updatedPosts;
         this.postUpdates.next([...this.posts]);
+        this.router.navigate(['/']);
       });
   }
 

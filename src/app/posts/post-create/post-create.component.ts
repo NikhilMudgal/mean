@@ -15,6 +15,7 @@ export class PostCreateComponent implements OnInit {
   mode = 'create';
   postId: string;
   post: Post;
+  isLoading = false;
   constructor(
     private postService: PostService,
     private route: ActivatedRoute
@@ -23,6 +24,7 @@ export class PostCreateComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
+        this.isLoading = true;
         this.mode = 'edit';
         this.postId = paramMap.get('postId');
         this.postService.getPostById(this.postId).subscribe((post) => {
@@ -31,6 +33,7 @@ export class PostCreateComponent implements OnInit {
             title: post.title,
             content: post.content,
           };
+          this.isLoading = false;
         });
       } else {
         this.mode = 'create';
@@ -41,6 +44,7 @@ export class PostCreateComponent implements OnInit {
 
   onSavePost(form: NgForm) {
     if (form.valid) {
+      this.isLoading = true;
       if (this.mode === 'create') {
         this.postService.addPost(form.value.title, form.value.content);
       } else {
