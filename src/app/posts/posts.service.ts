@@ -37,7 +37,7 @@ export class PostService {
   }
 
   getPostById(id: string) {
-    return {...this.posts.find(post => post.Id === id)};
+    return this.http.get<{ _id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
   }
 
 
@@ -59,9 +59,13 @@ export class PostService {
 
   updatePost(postId: string, postTitle: string, postContent: string) {
     const post: Post = {Id: postId, title: postTitle, content: postContent};
-    this.http.put('http://localhost:3000/api/posts/', postId, post)
+    this.http.put('http://localhost:3000/api/posts/' + postId , post)
     .subscribe(response => {
-      console.log(response);
+      const updatedPosts = [...this.posts];
+      const oldPostIndex = updatedPosts.findIndex(p => p.Id === post.Id);
+      updatedPosts[oldPostIndex] = post;
+      this.posts = updatedPosts;
+      this.postUpdates.next([...this.posts]);
     });
   }
 
