@@ -7,16 +7,20 @@ null if valid. The output for asynchronous validator will be similar along with 
 The Property key will be dynamic and we dont care about the property key name.
 So it is declared as dynamic by writing it in the square bracket.
 */
-export const mimeType =  (control: AbstractControl): Promise<{[key: string]: any}> | Observable<{[key: string]: any}> => {
-
+export const mimeType = (
+  control: AbstractControl
+): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {
   const file = control.value as File;
   const fileReader = new FileReader();
-  const frObs = new Observable((observer: Observer<{[key: string]: any}>) => {
+  const frObs = new Observable((observer: Observer<{ [key: string]: any }>) => {
     fileReader.addEventListener('loadend', () => {
-      const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(0, 4);
+      const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(
+        0,
+        4
+      );
       let header = '';
       let isValid = false;
-      for (let i = 0 ; i < arr.length; i++) {
+      for (let i = 0; i < arr.length; i++) {
         header += arr[i].toString(16);
       }
       switch (header) {
