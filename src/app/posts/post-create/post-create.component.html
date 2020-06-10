@@ -16,6 +16,10 @@
       <!-- '?' is called the elvis operator  and it will first check whether post exist before tries to read the title-->
       <mat-error *ngIf="title.invalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
+    <div>
+      <button mat-stroked-button type="button" (click) = "filePicker.click()">Pick Image</button> <!--By Default, it tries to submit the button-->
+      <input type="file" #filePicker>
+    </div>
     <mat-form-field>
       <textarea
         matInput
