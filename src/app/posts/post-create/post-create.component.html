@@ -1,20 +1,20 @@
 <mat-card>
-  <mat-spinner *ngIf = "isLoading"></mat-spinner>
-  <form (submit)="onSavePost()" [formGroup]= "form" *ngIf = "!isLoading">
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onSavePost()" [formGroup]="form" *ngIf="!isLoading">
     <!-- #postForm = "ngForm" will give access to the form object-->
     <mat-form-field>
-      <input
-        matInput
-        type="text"
-        formControlName = "title"
-        placeholder="Title"
-      />
+      <input matInput type="text" formControlName="title" placeholder="Title" />
       <!-- '?' is called the elvis operator  and it will first check whether post exist before tries to read the title-->
-      <mat-error *ngIf="form.get('title').invalid">{{ getErrorMessage() }}</mat-error>
+      <mat-error *ngIf="form.get('title').invalid">{{
+        getErrorMessage()
+      }}</mat-error>
     </mat-form-field>
     <div>
-      <button mat-stroked-button type="button" (click) = "filePicker.click()">Pick Image</button> <!--By Default, it tries to submit the button-->
-      <input type="file" #filePicker>
+      <button mat-stroked-button type="button" (click)="filePicker.click()">
+        Pick Image
+      </button>
+      <!--By Default, it tries to submit the button-->
+      <input type="file" #filePicker (change) = "onImagePicked($event)" />
     </div>
     <mat-form-field>
       <textarea
@@ -22,9 +22,11 @@
         rows="6"
         name="content"
         placeholder="Content"
-        formControlName = "content"
+        formControlName="content"
       ></textarea>
-      <mat-error *ngIf="form.get('content').invalid">{{ getErrorMessage() }}</mat-error>
+      <mat-error *ngIf="form.get('content').invalid">{{
+        getErrorMessage()
+      }}</mat-error>
     </mat-form-field>
     <button
       mat-raised-button
