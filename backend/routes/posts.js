@@ -30,16 +30,20 @@ const storage = multer.diskStorage({
 
 
 router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+  const url = req.protocol + '://' + req.get("host")  // this constructs url to our server
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
+    imagePath: url + "/images/" + req.file.filename
   });
-  console.log(post);
   post.save()   // save() is provided by mongoose package itself
   .then(createdPost => {
     res.status(201).json({
       message: "Post Added Successfully",
-      postId: createdPost._id
+      post: {
+        ...createdPost,
+        Id: createdPost._id,
+        }
     });
   });
   // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
