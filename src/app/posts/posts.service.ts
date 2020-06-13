@@ -48,15 +48,24 @@ export class PostService {
     return this.postUpdates.asObservable();
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { Id: null, title: title, content: content };
+  addPost(title: string, content: string, image: File) {
+    // const post: Post = { Id: null, title: title, content: content };
+    const postData = new FormData();
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('image', image, title);
     this.http
       .post<{ message: string; postId: string }>(
         'http://localhost:3000/api/posts',
-        post
+        postData
       )
       .subscribe((responseData) => {
-        post.Id = responseData.postId;
+        const post: Post = {
+          Id: responseData.postId,
+          title: title,
+          content: content,
+        };
+        // post.Id = responseData.postId;
         this.posts.push(post);
         this.postUpdates.next([...this.posts]); // Emiting the event
         this.router.navigate(['/']);
