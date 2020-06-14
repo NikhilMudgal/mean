@@ -51,7 +51,15 @@ router.post("", multer({storage: storage}).single("image"), (req, res, next) => 
 });
 
 router.get("", (req, res, next) => {
-  Post.find()
+  const pageSize = +req.query.pageSize; // by default query parameters will always have data in string. To convert them to numbers add '+' in the begining
+  const currentPage = +req.query.page;
+  const postQuery = Post.find();
+  if(pageSize && currentPage) {
+    // skip() means we will not retrieve all elements but will skip the the first n posts
+    postQuery.skip(pageSize * (currentPage - 1))
+    .limit(pageSize) // limit tells the amount of documents to be returned
+  }
+  postQuery
   .then(documents => {
     return res.status(200).json({
       posts: documents,

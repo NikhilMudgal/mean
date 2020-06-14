@@ -14,11 +14,12 @@ export class PostService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getPosts() {
+  getPosts(postsPerPage: number, currentPage: number) {
+    const queryParams = `?pageSize=${postsPerPage}&page=${currentPage}`;
     // this requests will not be send if we donot subscribe to it
     // we donot need to unsubscribe using ondestroy as it will be handled by angular automatically
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts')
+      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts' + queryParams)
       .pipe(
         map((postData) => {
           return postData.posts.map((post) => {
