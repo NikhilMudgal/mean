@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 import { Post } from '../posts.model';
 import { PostService } from '../posts.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-list',
@@ -12,6 +13,9 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   private postSubscription: Subscription;
   isLoading = false;
+  totalPosts = 10;
+  postPerPage = 5;
+  pageSizeOptions = [1, 2, 5, 10];
   constructor(private postService: PostService) {}
 
   ngOnInit() {
@@ -27,6 +31,10 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   onDelete(postId) {
     this.postService.deletePost(postId);
+  }
+
+  onChangedPage(pageData: PageEvent) {
+    console.log(pageData);
   }
 
   ngOnDestroy() {
