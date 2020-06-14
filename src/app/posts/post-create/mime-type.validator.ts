@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of } from 'rxjs';
 
 /* This will be asynchronous Validator as reading a file takes time.
 The Output for synchronous validator is object which return error if invalid and
@@ -10,6 +10,9 @@ So it is declared as dynamic by writing it in the square bracket.
 export const mimeType = (
   control: AbstractControl
 ): Promise<{ [key: string]: any }> | Observable<{ [key: string]: any }> => {
+  if (typeof(control.value) === 'string') {
+    return of(null); // quick way of adding obeservable which will emit data immediately
+  }
   const file = control.value as File;
   const fileReader = new FileReader();
   const frObs = new Observable((observer: Observer<{ [key: string]: any }>) => {

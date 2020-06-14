@@ -32,7 +32,7 @@ mongoose
 
 app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/images", express.static(path.join("backend/images")));
+app.use("/images", express.static(path.join("backend/images"))); // by default folders in backend are not allowed to be accessed . So to access them it is
 
 app.use((req, res, next) => {
   // First Argument is Header Key and second argument is value for that header

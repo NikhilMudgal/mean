@@ -53,7 +53,6 @@ router.post("", multer({storage: storage}).single("image"), (req, res, next) => 
 router.get("", (req, res, next) => {
   Post.find()
   .then(documents => {
-    console.log(documents);
     return res.status(200).json({
       posts: documents,
       message: "These are coming from router.js file",
@@ -73,9 +72,15 @@ router.get("/:id", (req, res, next) => {
   })
 });
 
-router.put("/:id", (req,res,next) => {
+router.put("/:id", multer({storage: storage}).single("image"), (req,res,next) => {
   // put() will replace the existing object while patch updates the existing object
-  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content})
+  let imagePath = req.body.imagePath;
+  if(req.file) {
+    const url = req.protocol + '://' + req.get("host");
+    imagePath = url + "/images/" + req.file.filename
+  }
+  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content, imagePath: imagePath })
+  console.log(post);
   Post.updateOne({_id: req.params.id}, post).then(result => {
     res.status(200).json({message: "Update Successfully"});
   })
