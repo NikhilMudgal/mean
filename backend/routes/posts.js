@@ -1,20 +1,49 @@
 const express = require('express');
+const multer = require('multer');  // Multer is used to extract incoming files
 const router = express.Router();
 
 const Post = require("../models/post");
 
+const MIME_TYPE_MAP =  {
+  'image/png': 'png',
+  'image/jpeg' : 'jpeg',
+  'image/jpg' : 'jpg'
+};
 
-router.post("", (req, res, next) => {
+// configure multer
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const isValid = MIME_TYPE_MAP[file.mimetype];
+    let error = new Error("Invalid Mime Type");
+    if(isValid) {
+      error = null;
+    }
+    cb(error, "backend/images")   // the path is relative to server.js file
+  }, // this function is executed whenever multer tries to save a file
+  filename: (req, file, cb) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const ext = MIME_TYPE_MAP[file.mimetype];
+    cb(null, name + "-" + Date.now() + '.' + ext);
+  }
+});
+
+
+router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+  const url = req.protocol + '://' + req.get("host")  // this constructs url to our server
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
+    imagePath: url + "/images/" + req.file.filename
   });
-  console.log(post);
   post.save()   // save() is provided by mongoose package itself
   .then(createdPost => {
     res.status(201).json({
       message: "Post Added Successfully",
-      postId: createdPost._id
+      post: {
+        ...createdPost,
+        Id: createdPost._id,
+        }
     });
   });
   // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
@@ -24,7 +53,6 @@ router.post("", (req, res, next) => {
 router.get("", (req, res, next) => {
   Post.find()
   .then(documents => {
-    console.log(documents);
     return res.status(200).json({
       posts: documents,
       message: "These are coming from router.js file",
@@ -44,9 +72,15 @@ router.get("/:id", (req, res, next) => {
   })
 });
 
-router.put("/:id", (req,res,next) => {
+router.put("/:id", multer({storage: storage}).single("image"), (req,res,next) => {
   // put() will replace the existing object while patch updates the existing object
-  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content})
+  let imagePath = req.body.imagePath;
+  if(req.file) {
+    const url = req.protocol + '://' + req.get("host");
+    imagePath = url + "/images/" + req.file.filename
+  }
+  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content, imagePath: imagePath })
+  console.log(post);
   Post.updateOne({_id: req.params.id}, post).then(result => {
     res.status(200).json({message: "Update Successfully"});
   })

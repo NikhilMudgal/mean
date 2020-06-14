@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Post } from '../posts.model';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostService } from '../posts.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-
+import { mimeType } from './mime-type.validator';
 @Component({
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
@@ -16,12 +16,24 @@ export class PostCreateComponent implements OnInit {
   postId: string;
   post: Post;
   isLoading = false;
+  form: FormGroup;
+  imagePreview: string;
   constructor(
     private postService: PostService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType],
+      }),
+    });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('postId')) {
         this.isLoading = true;
@@ -32,7 +44,13 @@ export class PostCreateComponent implements OnInit {
             Id: post._id,
             title: post.title,
             content: post.content,
+            imagePath: post.imagePath
           };
+          this.form.setValue({
+            title: this.post.title,
+            content: this.post.content,
+            image: this.post.imagePath
+          });
           this.isLoading = false;
         });
       } else {
@@ -42,19 +60,35 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
-  onSavePost(form: NgForm) {
-    if (form.valid) {
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ image: file });
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  onSavePost() {
+    if (this.form.valid) {
       this.isLoading = true;
       if (this.mode === 'create') {
-        this.postService.addPost(form.value.title, form.value.content);
+        this.postService.addPost(
+          this.form.value.title,
+          this.form.value.content,
+          this.form.value.image
+        );
       } else {
         this.postService.updatePost(
           this.postId,
-          form.value.title,
-          form.value.content
+          this.form.value.title,
+          this.form.value.content,
+          this.form.value.image
         );
       }
-      form.resetForm();
+      this.form.reset();
     }
   }
   getErrorMessage() {
