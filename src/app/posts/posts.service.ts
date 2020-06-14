@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class PostService {
-  private postUpdates = new Subject<Post[]>();
+  private postUpdates = new Subject<{posts: Post[], postCount: number}>();
   private posts: Post[] = [];
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -19,22 +19,22 @@ export class PostService {
     // this requests will not be send if we donot subscribe to it
     // we donot need to unsubscribe using ondestroy as it will be handled by angular automatically
     this.http
-      .get<{ message: string; posts: any }>('http://localhost:3000/api/posts' + queryParams)
+      .get<{ message: string; posts: any; maxPosts: number }>('http://localhost:3000/api/posts' + queryParams)
       .pipe(
         map((postData) => {
-          return postData.posts.map((post) => {
+          return {posts: postData.posts.map((post) => {
             return {
               title: post.title,
               content: post.content,
               Id: post._id,
               imagePath: post.imagePath
             };
-          });
+          }), maxPosts: postData.maxPosts};
         })
       )
-      .subscribe((transformedPosts) => {
-        this.posts = transformedPosts;
-        this.postUpdates.next([...this.posts]);
+      .subscribe((transformedPostsData) => {
+        this.posts = transformedPostsData.posts;
+        this.postUpdates.next({posts: [...this.posts], postCount: transformedPostsData.maxPosts});
       });
     // return this.posts;
   }
@@ -62,15 +62,16 @@ export class PostService {
         postData
       )
       .subscribe((responseData) => {
-        const post: Post = {
-          Id: responseData.post.Id,
-          title: title,
-          content: content,
-          imagePath: responseData.post.imagePath
-        };
-        // post.Id = responseData.postId;
-        this.posts.push(post);
-        this.postUpdates.next([...this.posts]); // Emiting the event
+        // Not Needed now since we are navigating back
+        // const post: Post = {
+        //   Id: responseData.post.Id,
+        //   title: title,
+        //   content: content,
+        //   imagePath: responseData.post.imagePath
+        // };
+        // // post.Id = responseData.postId;
+        // this.posts.push(post);
+        // this.postUpdates.next([...this.posts]); // Emiting the event
         this.router.navigate(['/']);
       });
   }
@@ -90,28 +91,29 @@ export class PostService {
     this.http
       .put('http://localhost:3000/api/posts/' + postId, postData)
       .subscribe((response) => {
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex((p) => p.Id === postId);
-        const post: Post = {
-          Id: postId,
-          title: postTitle,
-          content: postContent,
-          imagePath: null
-        };
-        updatedPosts[oldPostIndex] = post;
-        this.posts = updatedPosts;
-        this.postUpdates.next([...this.posts]);
+        // Not Needed now since we are navigating back via routing
+        // const updatedPosts = [...this.posts];
+        // const oldPostIndex = updatedPosts.findIndex((p) => p.Id === postId);
+        // const post: Post = {
+        //   Id: postId,
+        //   title: postTitle,
+        //   content: postContent,
+        //   imagePath: null
+        // };
+        // updatedPosts[oldPostIndex] = post;
+        // this.posts = updatedPosts;
+        // this.postUpdates.next([...this.posts]);
         this.router.navigate(['/']);
       });
   }
 
   deletePost(postId) {
-    this.http
-      .delete('http://localhost:3000/api/posts/' + postId)
-      .subscribe(() => {
-        const updatedPosts = this.posts.filter((post) => post.Id !== postId);
-        this.posts = updatedPosts;
-        this.postUpdates.next([...this.posts]);
-      });
+    return this.http
+      .delete('http://localhost:3000/api/posts/' + postId);
+      // .subscribe(() => {
+      //   const updatedPosts = this.posts.filter((post) => post.Id !== postId);
+      //   this.posts = updatedPosts;
+      //   this.postUpdates.next([...this.posts]);
+      // });
   }
 }

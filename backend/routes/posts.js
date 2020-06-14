@@ -54,6 +54,7 @@ router.get("", (req, res, next) => {
   const pageSize = +req.query.pageSize; // by default query parameters will always have data in string. To convert them to numbers add '+' in the begining
   const currentPage = +req.query.page;
   const postQuery = Post.find();
+  let fetchedPosts;
   if(pageSize && currentPage) {
     // skip() means we will not retrieve all elements but will skip the the first n posts
     postQuery.skip(pageSize * (currentPage - 1))
@@ -61,9 +62,13 @@ router.get("", (req, res, next) => {
   }
   postQuery
   .then(documents => {
+    fetchedPosts = documents
+    return Post.countDocuments();
+  }).then(count => {
     return res.status(200).json({
-      posts: documents,
+      posts: fetchedPosts,
       message: "These are coming from router.js file",
+      maxPosts: count
     });
   });    // find() simply return all entries
   // without next() it will not continue travel down other middle wares and
