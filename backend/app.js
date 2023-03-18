@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const postRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 
 const app = express(); // this will return an express app
 mongoose
@@ -51,5 +52,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postRoutes); // routes declared for posts in posts.js file of routes folder are now known by app.js
+app.use("/api/user", userRoutes)
 
 module.exports = app;
