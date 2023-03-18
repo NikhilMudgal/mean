@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const postRoutes = require("./routes/posts");
 
 const app = express(); // this will return an express app
-
 mongoose
   .connect(
     "mongodb+srv://nikhil_mudgal:N82813970@cluster0.fluzu.mongodb.net/posts?retryWrites=true&w=majority",
@@ -20,7 +19,8 @@ mongoose
   .then(() => {
     console.log("Connected to Mongodb Database");
   })
-  .catch(() => {
+  .catch((e) => {
+    console.log(e);
     console.log("Connection Failed");
   });
 

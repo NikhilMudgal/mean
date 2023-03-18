@@ -15,7 +15,7 @@ export const mimeType = (
   }
   const file = control.value as File;
   const fileReader = new FileReader();
-  const frObs = new Observable((observer: Observer<{ [key: string]: any }>) => {
+  const frObs = new Observable((observer: Observer<{ [key: string]: any }>) => { // creating custom observable
     fileReader.addEventListener('loadend', () => {
       const arr = new Uint8Array(fileReader.result as ArrayBuffer).subarray(
         0,

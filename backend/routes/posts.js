@@ -30,6 +30,7 @@ const storage = multer.diskStorage({
 
 
 router.post("", multer({storage: storage}).single("image"), (req, res, next) => {
+  // multer gives info about the file to be stored in the req body
   const url = req.protocol + '://' + req.get("host")  // this constructs url to our server
   const post = new Post({
     title: req.body.title,
@@ -53,7 +54,8 @@ router.post("", multer({storage: storage}).single("image"), (req, res, next) => 
 router.get("", (req, res, next) => {
   const pageSize = +req.query.pageSize; // by default query parameters will always have data in string. To convert them to numbers add '+' in the begining
   const currentPage = +req.query.page;
-  const postQuery = Post.find();
+  console.log(req.query);
+  const postQuery = Post.find(); // this will not be executed until we call then
   let fetchedPosts;
   if(pageSize && currentPage) {
     // skip() means we will not retrieve all elements but will skip the the first n posts
