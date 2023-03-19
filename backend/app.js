@@ -41,7 +41,7 @@ app.use((req, res, next) => {
   // line 13 means no matter which domain the app which is sending the request is running on, it is allowed to access our resources
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   // First line allows which domain can access our resources and the second statement tells the incoming request may have these headers
   res.setHeader(
