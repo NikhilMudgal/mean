@@ -4,9 +4,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const postRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 
 const app = express(); // this will return an express app
-
 mongoose
   .connect(
     "mongodb+srv://nikhil_mudgal:N82813970@cluster0.fluzu.mongodb.net/posts?retryWrites=true&w=majority",
@@ -20,7 +20,8 @@ mongoose
   .then(() => {
     console.log("Connected to Mongodb Database");
   })
-  .catch(() => {
+  .catch((e) => {
+    console.log(e);
     console.log("Connection Failed");
   });
 
@@ -40,7 +41,7 @@ app.use((req, res, next) => {
   // line 13 means no matter which domain the app which is sending the request is running on, it is allowed to access our resources
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   // First line allows which domain can access our resources and the second statement tells the incoming request may have these headers
   res.setHeader(
@@ -51,5 +52,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postRoutes); // routes declared for posts in posts.js file of routes folder are now known by app.js
+app.use("/api/user", userRoutes)
 
 module.exports = app;
