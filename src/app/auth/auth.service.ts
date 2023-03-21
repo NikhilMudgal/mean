@@ -53,6 +53,9 @@ export class AuthService {
         this.tokenTimer = setTimeout(() => {
           this.logout()
         }, expiresInDuration *1000)
+        const now = new Date();
+        const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+        this.saveAuthData(this.token, expirationDate)
         this.router.navigate(['/'])
       }
     })
@@ -62,8 +65,19 @@ export class AuthService {
     this.token = null;
     this.isAuthenticated =  false;
     this.authStatusListener.next(false);
+    this.clearAuthData()
     this.router.navigate(['/login'])
     clearTimeout(this.tokenTimer)
+  }
+
+  private saveAuthData(token: string, expirationDate: Date) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiration', expirationDate.toISOString())
+  }
+
+  private clearAuthData() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('expiration')
   }
 
 }
