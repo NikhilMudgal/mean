@@ -41,7 +41,7 @@ export class PostService {
   }
 
   getPostById(id: string) {
-    return this.http.get<{ _id: string; title: string; content: string, imagePath: string }>(
+    return this.http.get<{ _id: string; title: string; content: string, imagePath: string, creator: string }>(
       'http://localhost:3000/api/posts/' + id
     );
   }
@@ -87,7 +87,7 @@ export class PostService {
       postData.append('content', postContent);
       postData.append('image', image, postTitle);
     } else {
-      postData = { Id: postId, title: postTitle, content: postContent, imagePath: image };
+      postData = { Id: postId, title: postTitle, content: postContent, imagePath: image, creator: null };
     }
     this.http
       .put('http://localhost:3000/api/posts/' + postId, postData)
