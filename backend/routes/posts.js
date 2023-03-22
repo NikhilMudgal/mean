@@ -109,8 +109,13 @@ router.put("/:id", checkAuth,multer({storage: storage}).single("image"), (req,re
 });
 
 router.delete("/:id",checkAuth, (req, res, next) => {
-  Post.deleteOne({_id: req.params.id}).then(result => {
-    res.status(200).json({message: "Post Deleted"});
+  Post.deleteOne({_id: req.params.id, creator: req.userData.userId}).then(result => {
+    console.log('deleted', result);
+    if(result.deletedCount > 1) {
+      res.status(200).json({message: "Post Deleted"});
+    } else {
+      res.status(401).json({message: "Not Authorised"});
+    }
   });
 });
 
