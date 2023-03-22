@@ -98,8 +98,13 @@ router.put("/:id", checkAuth,multer({storage: storage}).single("image"), (req,re
   }
   const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content, imagePath: imagePath })
   console.log(post);
-  Post.updateOne({_id: req.params.id}, post).then(result => {
-    res.status(200).json({message: "Update Successfully"});
+  Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post).then(result => {
+    console.log(result)
+    if(result.nModified > 0) {
+      res.status(200).json({message: "Update Successfully"});
+    } else {
+      res.status(401).json({message: "Not Authorised"});
+    }
   })
 });
 
