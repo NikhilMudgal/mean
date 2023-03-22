@@ -96,7 +96,7 @@ router.put("/:id", checkAuth,multer({storage: storage}).single("image"), (req,re
     const url = req.protocol + '://' + req.get("host");
     imagePath = url + "/images/" + req.file.filename
   }
-  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content, imagePath: imagePath })
+  const post = new Post({ _id: req.body.Id, title: req.body.title, content: req.body.content, imagePath: imagePath, creator: req.userData.userId })
   console.log(post);
   Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post).then(result => {
     console.log(result)
