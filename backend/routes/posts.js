@@ -48,7 +48,12 @@ router.post("", checkAuth,multer({storage: storage}).single("image"), (req, res,
         Id: createdPost._id,
         }
     });
-  });
+  }).catch((error) => {
+    res.status(500).json({
+      message: "Creating a post Failed"
+    })
+  })
+  
   // the data will be saved in the collection whose name will be the plural name of the model and will be created automatically
 
 });
@@ -74,6 +79,10 @@ router.get("", (req, res, next) => {
       message: "These are coming from router.js file",
       maxPosts: count
     });
+  }).catch((error) => {
+    res.status(500).json({
+      message: 'Fetching Post Failed'
+    })
   });    // find() simply return all entries
   // without next() it will not continue travel down other middle wares and
 
@@ -86,6 +95,10 @@ router.get("/:id", (req, res, next) => {
     } else {
       res.status(404).json({message: "Post not found"});
     }
+  }).catch((error) => {
+    res.status(500).json({
+      message: 'Fetching Post Failed'
+    })
   })
 });
 
@@ -105,6 +118,10 @@ router.put("/:id", checkAuth,multer({storage: storage}).single("image"), (req,re
     } else {
       res.status(401).json({message: "Not Authorised"});
     }
+  }).catch((error) => {
+    res.status(500).json({
+      message: 'Could not update post'
+    })
   })
 });
 
@@ -116,6 +133,10 @@ router.delete("/:id",checkAuth, (req, res, next) => {
     } else {
       res.status(401).json({message: "Not Authorised"});
     }
+  }).catch((error) => {
+    res.status(500).json({
+      message: 'Deleting Post Failed'
+    })
   });
 });
 

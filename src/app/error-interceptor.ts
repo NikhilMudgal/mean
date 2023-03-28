@@ -15,7 +15,13 @@ export class ErrorInceptor implements HttpInterceptor {
         // handle() gives us back the response observable stream
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
-             this.matdialog.open(ErrorComponent)
+             let errorMessage = 'An Unkonwn error occurred';
+                if(error.error.message) {
+                    errorMessage = error.error.message
+             }
+                this.matdialog.open(ErrorComponent, {
+                data: {message: errorMessage}
+             })
              return throwError(error) 
             })
         );

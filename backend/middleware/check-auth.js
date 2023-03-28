@@ -11,6 +11,6 @@ module.exports = (req, res, next) => {
       next()
       // each and every middleware running after check auth middleware will get the extra info
     } catch(error) {
-        res.status(401).json({message: "Auth Failed"})
+        res.status(401).json({message: "You are not Authenticated"})
     }
 }
