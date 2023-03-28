@@ -3,10 +3,12 @@ import { Injectable } from "@angular/core";
 import { AuthService } from "./auth/auth.service";
 import { catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
 
 @Injectable()
 export class ErrorInceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) {  }
+    constructor(private authService: AuthService,
+        private matdialog: MatDialog) {  }
     intercept(req: HttpRequest<any>, next: HttpHandler) {
         
         // handle() gives us back the response observable stream
