@@ -4,6 +4,7 @@ import { AuthService } from "./auth/auth.service";
 import { catchError } from "rxjs/operators";
 import { throwError } from "rxjs";
 import { MatDialog } from "@angular/material/dialog";
+import { ErrorComponent } from "./error/error.component";
 
 @Injectable()
 export class ErrorInceptor implements HttpInterceptor {
@@ -14,8 +15,7 @@ export class ErrorInceptor implements HttpInterceptor {
         // handle() gives us back the response observable stream
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
-             console.log(error)
-             alert(error.error.error.message)
+             this.matdialog.open(ErrorComponent)
              return throwError(error) 
             })
         );
