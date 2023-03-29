@@ -10,16 +10,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
-    imports: [
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatToolbarModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule,
-    MatDialogModule
-    ],
     exports: [
         MatInputModule,
         MatButtonModule,
