@@ -46,7 +46,7 @@ exports.userLogin = (req,res,next) => {
                 message: 'Auth Failed'
             })
         }
-        const token = jwt.sign({email: fetchedUser.email, userId: fetchedUser._id}, 'secret_this_should_be_longer', {expiresIn: '1h'});
+        const token = jwt.sign({email: fetchedUser.email, userId: fetchedUser._id}, process.env.JWT_KEY, {expiresIn: '1h'}); // JWT_KEY will be injected during the runtime as nodejs has this inbuilt functionality
         console.log(token)
         res.status(200).json({
             token,

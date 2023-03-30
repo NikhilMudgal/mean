@@ -9,7 +9,7 @@ const userRoutes = require("./routes/user");
 const app = express(); // this will return an express app
 mongoose
   .connect(
-    "mongodb+srv://nikhil_mudgal:N82813970@cluster0.fluzu.mongodb.net/posts?retryWrites=true&w=majority",
+    "mongodb+srv://nikhil_mudgal:" + process.env.MONGO_ALTAS_PW +"@cluster0.fluzu.mongodb.net/posts?retryWrites=true&w=majority",
     {
       // In 'mongodb.net/posts' posts is the name of the database
       useNewUrlParser: true,
