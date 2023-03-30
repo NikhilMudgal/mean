@@ -5,6 +5,10 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment'; 
+
+const BACKEND_URL = environment.apiUrl + '/posts/';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -19,7 +23,7 @@ export class PostService {
     // this requests will not be send if we donot subscribe to it
     // we donot need to unsubscribe using ondestroy as it will be handled by angular automatically
     this.http
-      .get<{ message: string; posts: any; maxPosts: number }>('http://localhost:3000/api/posts' + queryParams)
+      .get<{ message: string; posts: any; maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(
         map((postData) => {
           return {posts: postData.posts.map((post) => {
@@ -42,7 +46,7 @@ export class PostService {
 
   getPostById(id: string) {
     return this.http.get<{ _id: string; title: string; content: string, imagePath: string, creator: string }>(
-      'http://localhost:3000/api/posts/' + id
+      BACKEND_URL + id
     );
   }
 
@@ -59,7 +63,7 @@ export class PostService {
     postData.append('image', image, title);
     this.http
       .post<{ message: string; post: Post }>(
-        'http://localhost:3000/api/posts',
+        BACKEND_URL,
         postData
       )
       .subscribe((responseData) => {
@@ -90,7 +94,7 @@ export class PostService {
       postData = { Id: postId, title: postTitle, content: postContent, imagePath: image, creator: null };
     }
     this.http
-      .put('http://localhost:3000/api/posts/' + postId, postData)
+      .put(BACKEND_URL + postId, postData)
       .subscribe((response) => {
         // Not Needed now since we are navigating back via routing
         // const updatedPosts = [...this.posts];
@@ -110,7 +114,7 @@ export class PostService {
 
   deletePost(postId) {
     return this.http
-      .delete('http://localhost:3000/api/posts/' + postId);
+      .delete(BACKEND_URL + postId);
       // .subscribe(() => {
       //   const updatedPosts = this.posts.filter((post) => post.Id !== postId);
       //   this.posts = updatedPosts;
